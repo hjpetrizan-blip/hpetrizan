@@ -1,0 +1,7 @@
+{
+  "name": "hpetrizan",
+  "version": 2,
+  "rewrites": [
+    {"source": "/api/claude", "destination": "/api/claude.js"}
+  ]
+}
