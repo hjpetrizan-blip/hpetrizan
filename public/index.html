@@ -203,18 +203,14 @@ var loadedTabs=new Set();
 function showTab(id){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.tab===id);});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.toggle('active',p.id==='panel-'+id);});if(!loadedTabs.has(id)){loadedTabs.add(id);if(id==='argentina')fetchDolares();if(id==='geopolitica')genGeo();if(id==='calendario')genCalendario();}}
 document.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){showTab(b.dataset.tab);});});
 async function fetchVIX(){try{
-  const [r1,r2]=await Promise.all([
-    fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=1d',{signal:AbortSignal.timeout(8000)}),
-    fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EVVIX?interval=1d&range=1d',{signal:AbortSignal.timeout(8000)})
-  ]);
-  const d1=await r1.json();const d2=await r2.json();
-  const vix=d1?.chart?.result?.[0]?.meta?.regularMarketPrice?.toFixed(2)||'N/D';
-  const vvix=d2?.chart?.result?.[0]?.meta?.regularMarketPrice?.toFixed(2)||'N/D';
-  const vixPrev=d1?.chart?.result?.[0]?.meta?.chartPreviousClose?.toFixed(2)||vix;
-  const vvixPrev=d2?.chart?.result?.[0]?.meta?.chartPreviousClose?.toFixed(2)||vvix;
-  const vixChg=((vix-vixPrev)/vixPrev*100).toFixed(2);
-  const vvixChg=((vvix-vvixPrev)/vvixPrev*100).toFixed(2);
-  const vixCol=vix>20?'var(--red)':vix>15?'var(--amber)':'var(--green)';
+  const r=await fetch('/api/quotes?symbols=%5EVIX,%5EVVIX',{signal:AbortSignal.timeout(8000)});
+  const d=await r.json();
+  const vix=d['^VIX']?.price!=null?parseFloat(d['^VIX'].price).toFixed(2):'N/D';
+  const vvix=d['^VVIX']?.price!=null?parseFloat(d['^VVIX'].price).toFixed(2):'N/D';
+  const vixChg=d['^VIX']?.change||'0';
+  const vvixChg=d['^VVIX']?.change||'0';
+  const vixNum=parseFloat(vix);
+  const vixCol=vixNum>20?'var(--red)':vixNum>15?'var(--amber)':'var(--green)';
   const el=document.getElementById('vix-box');
   if(el)el.innerHTML='<div><span style="color:var(--dim);font-size:9px">VIX&nbsp;&nbsp;&nbsp;&nbsp;</span><strong style="color:'+vixCol+'">'+vix+'</strong><span style="color:var(--dim);font-size:10px"> ('+vixChg+'%)</span></div><div><span style="color:var(--dim);font-size:9px">VVIX&nbsp;&nbsp;&nbsp;</span><strong style="color:var(--amber)">'+vvix+'</strong><span style="color:var(--dim);font-size:10px"> ('+vvixChg+'%)</span></div>';
   }catch(e){const el=document.getElementById('vix-box');if(el)el.innerHTML='<span style="color:var(--dim);font-size:10px">N/D</span>';}}
