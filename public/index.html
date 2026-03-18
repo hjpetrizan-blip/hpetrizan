@@ -217,13 +217,16 @@ async function fetchVIX(){try{
   
 async function fetchCCL(){
 try{
-var rq=await fetch('/api/quotes?symbols=GGAL',{signal:AbortSignal.timeout(8000)});
+var url='/api/quotes';
+var sym='GGAL';
+var rq=await fetch(url+'?symbols='+sym,{signal:AbortSignal.timeout(8000)});
 var dq=await rq.json();
-var adr=dq['GGAL']&&dq['GGAL'].price;
+var adr=dq[sym]&&dq[sym].price;
 if(!adr)return;
 var ea=document.getElementById('ccl-adr');
 if(ea)ea.textContent='USD '+parseFloat(adr).toFixed(2);
-var rd=await fetch('https://dolarapi.com/v1/dolares/contadoconliqui',{signal:AbortSignal.timeout(8000)});
+var ccl_url='https://dolarapi.com/v1/dolares/contadoconliqui';
+var rd=await fetch(ccl_url,{signal:AbortSignal.timeout(8000)});
 var dd=await rd.json();
 var ccl=dd&&dd.venta;
 if(ccl){
