@@ -77,6 +77,22 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .tab-panel{display:none;}.tab-panel.active{display:block;}
 #footer{border-top:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;font-size:9px;color:var(--dim);}
 @media(max-width:900px){#main{grid-template-columns:1fr;}#sidebar{border-left:none;border-top:1px solid var(--border);}}
+
+#chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:400px;}
+#chat-messages{flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px;}
+.chat-msg{max-width:100%;font-family:var(--sans);font-size:12px;line-height:1.6;}
+.chat-msg.user{background:rgba(255,183,0,.08);border:1px solid rgba(255,183,0,.2);border-radius:2px;padding:8px 10px;align-self:flex-end;color:var(--amber);max-width:85%;}
+.chat-msg.bot{background:var(--bg3);border:1px solid var(--border);border-radius:2px;padding:10px 12px;color:var(--text);}
+.chat-msg.bot strong{color:var(--amber);}
+.chat-msg.bot em{color:var(--cyan);font-style:normal;}
+.chat-typing{color:var(--dim);font-size:11px;padding:4px 0;animation:pulse 1s infinite;}
+#chat-input-row{display:flex;gap:6px;margin-top:8px;border-top:1px solid var(--border);padding-top:10px;}
+#chat-input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none;border-radius:2px;}
+#chat-input:focus{border-color:var(--amber);}
+#chat-send{background:var(--amber);color:#000;border:none;font-family:var(--mono);font-weight:700;font-size:11px;padding:8px 14px;cursor:pointer;border-radius:2px;letter-spacing:.5px;flex-shrink:0;}
+#chat-send:hover{background:#ffd040;}
+.chat-chart-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:2px;overflow:hidden;margin-top:6px;}
+.chat-hint{font-size:9px;color:var(--dim);margin-top:6px;letter-spacing:.5px;}
 </style>
 </head>
 <body>
@@ -107,6 +123,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <button class="tab-btn" data-tab="commodities">&#9889; Commodities</button>
 <button class="tab-btn" data-tab="geopolitica">&#127894; Geopolitica</button>
 <button class="tab-btn" data-tab="calendario">&#128197; Calendario</button>
+<button class="tab-btn" data-tab="chat">&#129302; Chat IA</button>
 </div>
 
 <div id="main"><div id="content">
@@ -164,6 +181,23 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="tab-panel" id="panel-calendario"><div class="sec-title"><span class="sec-dot"></span>Agenda Economica &mdash; Esta Semana</div>
 <div id="cal-content"><div class="ai-skeleton" style="width:100%;margin-bottom:8px"></div><div class="ai-skeleton" style="width:75%"></div></div></div>
 
+
+<div class="tab-panel" id="panel-chat">
+<div id="chat-wrap">
+  <div id="chat-messages">
+    <div class="chat-msg bot">
+      <strong>HP Terminal IA</strong><br>
+      Hola! Respondo preguntas sobre mercados y muestro gráficos.<br><br>
+      <em>/chart GGAL</em> &bull; <em>/chart NASDAQ:NVDA</em><br>
+      o simplemente preguntá lo que quieras.
+    </div>
+  </div>
+  <div id="chat-input-row">
+    <input type="text" id="chat-input" placeholder="Preguntá algo o /chart GGAL..." maxlength="500"/>
+    <button id="chat-send" onclick="chatSend()">ENVIAR</button>
+  </div>
+</div>
+</div>
 </div>
 <div id="sidebar">
 <div class="sec-title"><span class="sec-dot"></span>Analisis <span id="ai-session-badge" class="session-pre">Pre-Apertura</span></div>
@@ -215,6 +249,90 @@ async function fetchVIX(){try{
   if(el)el.innerHTML='<div><span style="color:var(--dim);font-size:9px">VIX&nbsp;&nbsp;&nbsp;&nbsp;</span><strong style="color:'+vixCol+'">'+vix+'</strong><span style="color:var(--dim);font-size:10px"> ('+vixChg+'%)</span></div><div><span style="color:var(--dim);font-size:9px">VVIX&nbsp;&nbsp;&nbsp;</span><strong style="color:var(--amber)">'+vvix+'</strong><span style="color:var(--dim);font-size:10px"> ('+vvixChg+'%)</span></div>';
   }catch(e){const el=document.getElementById('vix-box');if(el)el.innerHTML='<span style="color:var(--dim);font-size:10px">N/D</span>';}}
   function init(){setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);fetchVIX();setInterval(fetchVIX,60000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
+
+var chatHistory=[];
+var chatChartId=0;
+
+function chatSend(){
+  var inp=document.getElementById('chat-input');
+  var q=inp.value.trim();
+  if(!q)return;
+  inp.value='';
+  chatAddMsg(q,'user');
+  
+  // Comando /chart
+  if(q.toLowerCase().startsWith('/chart')){
+    var sym=q.split(' ').slice(1).join('').trim().toUpperCase()||'NASDAQ:GGAL';
+    // Resolver símbolo: si no tiene exchange, intentar mapear
+    var symMap={'GGAL':'NASDAQ:GGAL','YPF':'NYSE:YPF','BMA':'NYSE:BMA','MELI':'NASDAQ:MELI','NVDA':'NASDAQ:NVDA','AAPL':'NASDAQ:AAPL','MSFT':'NASDAQ:MSFT','SPX':'SP:SPX','SPY':'AMEX:SPY','QQQ':'NASDAQ:QQQ'};
+    if(!sym.includes(':') && symMap[sym]) sym=symMap[sym];
+    else if(!sym.includes(':')) sym='NASDAQ:'+sym;
+    chatAddChart(sym);
+    return;
+  }
+  
+  // Pregunta a la IA
+  chatAddTyping();
+  var sysCtx='Sos el analista senior de HP Market Terminal, una terminal de mercado profesional para traders argentinos. Tenés acceso a datos del mercado en tiempo real via TradingView. Responde de forma concisa y directa (máx 150 palabras). Usá <strong> para cifras y <em> para términos clave. Sin markdown ni asteriscos. Si te preguntan por un activo específico, sugerí usar /chart SIMBOLO para ver el gráfico.';
+  chatHistory.push({role:'user',content:q});
+  callClaude(sysCtx+'\n\nHistorial:\n'+chatHistory.slice(-6).map(function(m){return m.role+': '+m.content;}).join('\n')+'\nUser: '+q, 600)
+    .then(function(resp){
+      removeChatTyping();
+      chatHistory.push({role:'assistant',content:resp});
+      chatAddMsg(resp,'bot');
+    })
+    .catch(function(){
+      removeChatTyping();
+      chatAddMsg('Error conectando con la IA. Intentá de nuevo.','bot');
+    });
+}
+
+function chatAddMsg(text,role){
+  var box=document.getElementById('chat-messages');
+  if(!box)return;
+  var d=document.createElement('div');
+  d.className='chat-msg '+role;
+  d.innerHTML=text;
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
+}
+
+function chatAddTyping(){
+  var box=document.getElementById('chat-messages');
+  if(!box)return;
+  var d=document.createElement('div');
+  d.className='chat-typing';d.id='chat-typing-indicator';
+  d.textContent='Analizando...';
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
+}
+
+function removeChatTyping(){
+  var el=document.getElementById('chat-typing-indicator');
+  if(el)el.remove();
+}
+
+function chatAddChart(sym){
+  var box=document.getElementById('chat-messages');
+  if(!box)return;
+  chatChartId++;
+  var cid='chatchart'+chatChartId;
+  var d=document.createElement('div');
+  d.className='chat-msg bot';
+  d.innerHTML='<strong>Gráfico: '+sym+'</strong><div class="chat-chart-wrap"><div id="'+cid+'" style="height:300px"></div></div>';
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
+  // Cargar widget TV
+  var s=document.createElement('script');
+  s.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  s.async=true;
+  s.innerHTML=JSON.stringify({autosize:true,symbol:sym,interval:'D',timezone:'America/Argentina/Buenos_Aires',theme:'dark',style:'1',locale:'es',container_id:cid,backgroundColor:'rgba(17,17,17,1)',gridColor:'rgba(42,42,42,0.6)',hide_top_toolbar:false,hide_legend:false});
+  document.getElementById(cid).appendChild(s);
+}
+
+document.getElementById('chat-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter')chatSend();
+});
 </script>
 </body>
 </html>
