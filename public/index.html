@@ -94,7 +94,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 <div id="ticker-tape"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq"},{"proName":"FOREXCOM:DJI","title":"Dow Jones"},{"proName":"CAPITALCOM:VIX","title":"VIX"},{"proName":"CAPITALCOM:VVIX","title":"VVIX"},{"description":"MERVAL","proName":"BCBA:IMV"},{"proName":"TVC:GOLD","title":"Oro"},{"proName":"TVC:USOIL","title":"WTI"},{"proName":"BITSTAMP:BTCUSD","title":"BTC"},{"description":"GGAL","proName":"NASDAQ:GGAL"},{"description":"YPF","proName":"NYSE:YPF"},{"description":"MELI","proName":"NASDAQ:MELI"},{"proName":"FX:EURUSD","title":"EUR/USD"},{"proName":"CBOT:ZS1!","title":"Soja"},{"proName":"CBOT:ZC1!","title":"Maiz"}],"showSymbolLogo":true,"isTransparent":false,"displayMode":"regular","colorTheme":"dark","locale":"es"}
+{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq"},{"proName":"FOREXCOM:DJI","title":"Dow Jones"},{"proName":"CAPITALCOM:VIX","title":"VIX"},{"description":"MERVAL","proName":"BCBA:IMV"},{"proName":"TVC:GOLD","title":"Oro"},{"proName":"TVC:USOIL","title":"WTI"},{"proName":"BITSTAMP:BTCUSD","title":"BTC"},{"description":"GGAL","proName":"NASDAQ:GGAL"},{"description":"YPF","proName":"NYSE:YPF"},{"description":"MELI","proName":"NASDAQ:MELI"},{"proName":"FX:EURUSD","title":"EUR/USD"},{"proName":"CBOT:ZS1!","title":"Soja"},{"proName":"CBOT:ZC1!","title":"Maiz"}],"showSymbolLogo":true,"isTransparent":false,"displayMode":"regular","colorTheme":"dark","locale":"es"}
 </script></div></div>
 
 <div id="topbar"><div style="display:flex;align-items:center;gap:12px"><div class="logo">HP <span>//</span> Market Terminal</div><div class="topbar-clock" id="clock">--:-- hs AR</div></div><div id="mkt-badge" class="badge-closed">CERRADO</div></div>
@@ -120,7 +120,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="sec-title"><span class="sec-dot"></span>Futuros &amp; Bonos</div>
 <div class="tv-wrap" style="height:240px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-{"width":"100%","height":"100%","symbolsGroups":[{"name":"Volatilidad & FX","symbols":[{"name":"CAPITALCOM:VIX","displayName":"VIX"},{"name":"CAPITALCOM:VVIX","displayName":"VVIX"},{"name":"TVC:DXY","displayName":"DXY Dollar"},{"name":"TVC:GOLD","displayName":"Oro"},{"name":"TVC:USOIL","displayName":"WTI"}]},{"name":"Bonos USA","symbols":[{"name":"TVC:US10Y","displayName":"T-Note 10Y"},{"name":"TVC:US30Y","displayName":"T-Bond 30Y"},{"name":"TVC:US02Y","displayName":"T-Note 2Y"}]}],"showSymbolLogo":true,"isTransparent":false,"colorTheme":"dark","locale":"es"}
+{"width":"100%","height":"100%","symbolsGroups":[{"name":"Volatilidad & FX","symbols":[{"name":"CAPITALCOM:VIX","displayName":"VIX"},{"name":"TVC:DXY","displayName":"DXY Dollar"},{"name":"TVC:GOLD","displayName":"Oro"},{"name":"TVC:USOIL","displayName":"WTI"}]},{"name":"Bonos USA","symbols":[{"name":"TVC:US10Y","displayName":"T-Note 10Y"},{"name":"TVC:US30Y","displayName":"T-Bond 30Y"},{"name":"TVC:US02Y","displayName":"T-Note 2Y"}]}],"showSymbolLogo":true,"isTransparent":false,"colorTheme":"dark","locale":"es"}
 </script></div></div>
 <div class="sec-title"><span class="sec-dot"></span>Big Tech &amp; Defensa</div>
 <div class="tv-wrap" style="height:340px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
@@ -171,6 +171,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div id="ai-box" style="display:none"></div>
 <div style="margin-top:14px"><div class="sec-title"><span class="sec-dot"></span>Driver del Dia</div><div id="driver-box"><div class="ai-skeleton" style="width:100%"></div><div class="ai-skeleton" style="width:70%"></div></div></div>
 <div style="margin-top:14px"><div class="sec-title"><span class="sec-dot"></span>Tipo de Cambio AR</div><div id="fx-sb" style="font-size:13px;line-height:2.2"></div></div>
+<div style="margin-top:14px"><div class="sec-title"><span class="sec-dot"></span>Volatilidad</div><div id="vix-box" style="font-size:13px;line-height:2.4"><span style="color:var(--dim);font-size:10px">Cargando...</span></div></div>
 </div>
 </div>
 
@@ -201,7 +202,23 @@ async function genCalendario(){var el=document.getElementById('cal-content');if(
 var loadedTabs=new Set();
 function showTab(id){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.tab===id);});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.toggle('active',p.id==='panel-'+id);});if(!loadedTabs.has(id)){loadedTabs.add(id);if(id==='argentina')fetchDolares();if(id==='geopolitica')genGeo();if(id==='calendario')genCalendario();}}
 document.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){showTab(b.dataset.tab);});});
-function init(){setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
+async function fetchVIX(){try{
+  const [r1,r2]=await Promise.all([
+    fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=1d',{signal:AbortSignal.timeout(8000)}),
+    fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EVVIX?interval=1d&range=1d',{signal:AbortSignal.timeout(8000)})
+  ]);
+  const d1=await r1.json();const d2=await r2.json();
+  const vix=d1?.chart?.result?.[0]?.meta?.regularMarketPrice?.toFixed(2)||'N/D';
+  const vvix=d2?.chart?.result?.[0]?.meta?.regularMarketPrice?.toFixed(2)||'N/D';
+  const vixPrev=d1?.chart?.result?.[0]?.meta?.chartPreviousClose?.toFixed(2)||vix;
+  const vvixPrev=d2?.chart?.result?.[0]?.meta?.chartPreviousClose?.toFixed(2)||vvix;
+  const vixChg=((vix-vixPrev)/vixPrev*100).toFixed(2);
+  const vvixChg=((vvix-vvixPrev)/vvixPrev*100).toFixed(2);
+  const vixCol=vix>20?'var(--red)':vix>15?'var(--amber)':'var(--green)';
+  const el=document.getElementById('vix-box');
+  if(el)el.innerHTML='<div><span style="color:var(--dim);font-size:9px">VIX&nbsp;&nbsp;&nbsp;&nbsp;</span><strong style="color:'+vixCol+'">'+vix+'</strong><span style="color:var(--dim);font-size:10px"> ('+vixChg+'%)</span></div><div><span style="color:var(--dim);font-size:9px">VVIX&nbsp;&nbsp;&nbsp;</span><strong style="color:var(--amber)">'+vvix+'</strong><span style="color:var(--dim);font-size:10px"> ('+vvixChg+'%)</span></div>';
+  }catch(e){const el=document.getElementById('vix-box');if(el)el.innerHTML='<span style="color:var(--dim);font-size:10px">N/D</span>';}}
+  function init(){setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);fetchVIX();setInterval(fetchVIX,60000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
 </script>
 </body>
 </html>
