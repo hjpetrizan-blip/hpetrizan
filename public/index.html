@@ -240,7 +240,42 @@ async function fetchVIX(){try{
   }catch(e){const el=document.getElementById('vix-box');if(el)el.innerHTML='<span style="color:var(--dim);font-size:10px">N/D</span>';}}
   function normCDF(x){var a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;var sign=x<0?-1:1;var ax=Math.abs(x);var t=1/(1+p*ax);var y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-ax*ax);return 0.5*(1+sign*y);}
 function normPDF(x){return Math.exp(-0.5*x*x)/Math.sqrt(2*Math.PI);}
-function calcBS(){var S=parseFloat(document.getElementById('bs-s').value),K=parseFloat(document.getElementById('bs-k').value),dias=parseFloat(document.getElementById('bs-dias').value),vol=parseFloat(document.getElementById('bs-vol').value)/100,rf=parseFloat(document.getElementById('bs-tasa').value)/100,tipo=document.getElementById('bs-tipo').value;if([S,K,dias,vol,rf].some(isNaN)||dias<=0){alert('Completa los campos');return;}var T=dias/365,d1=(Math.log(S/K)+(rf+0.5*vol*vol)*T)/(vol*Math.sqrt(T)),d2=d1-vol*Math.sqrt(T),precio,delta,rho;if(tipo==='call'){precio=S*normCDF(d1)-K*Math.exp(-rf*T)*normCDF(d2);delta=normCDF(d1);rho=K*T*Math.exp(-rf*T)*normCDF(d2)/100;}else{precio=K*Math.exp(-rf*T)*normCDF(-d2)-S*normCDF(-d1);delta=normCDF(d1)-1;rho=-K*T*Math.exp(-rf*T)*normCDF(-d2)/100;}var gamma=normPDF(d1)/(S*vol*Math.sqrt(T)),theta=tipo==='call'?(-S*normPDF(d1)*vol/(2*Math.sqrt(T))-rf*K*Math.exp(-rf*T)*normCDF(d2))/365:(-S*normPDF(d1)*vol/(2*Math.sqrt(T))+rf*K*Math.exp(-rf*T)*normCDF(-d2))/365,vega=S*normPDF(d1)*Math.sqrt(T)/100,itm=tipo==='call'?S>K:S<K,intr=tipo==='call'?Math.max(S-K,0):Math.max(K-S,0),extr=precio-intr;document.getElementById('bs-precio').textContent=precio.toFixed(2);document.getElementById('bs-delta').textContent=delta.toFixed(3);document.getElementById('bs-gamma').textContent=gamma.toFixed(4);document.getElementById('bs-theta').textContent=theta.toFixed(2);document.getElementById('bs-vega').textContent=vega.toFixed(2);document.getElementById('bs-rho').textContent=rho.toFixed(2);document.getElementById('bs-interp').textContent=(itm?'ITM':'OTM')+' Intr='+intr.toFixed(2)+' Temp='+extr.toFixed(2)+' Delta='+delta.toFixed(2)+' Theta='+theta.toFixed(2)+'/dia';document.getElementById('bs-result').style.display='block';}
+function calcBS(){
+var S=parseFloat(document.getElementById('bs-s').value);
+var K=parseFloat(document.getElementById('bs-k').value);
+var dias=parseFloat(document.getElementById('bs-dias').value);
+var vol=parseFloat(document.getElementById('bs-vol').value)/100;
+var rf=parseFloat(document.getElementById('bs-tasa').value)/100;
+var tipo=document.getElementById('bs-tipo').value;
+if([S,K,dias,vol,rf].some(isNaN)||dias<=0){alert('Completa los campos');return;}
+var T=dias/365;
+var d1=(Math.log(S/K)+(rf+0.5*vol*vol)*T)/(vol*Math.sqrt(T));
+var d2=d1-vol*Math.sqrt(T);
+var precio,delta,rho;
+if(tipo==='call'){
+precio=S*normCDF(d1)-K*Math.exp(-rf*T)*normCDF(d2);
+delta=normCDF(d1);
+rho=K*T*Math.exp(-rf*T)*normCDF(d2)/100;
+}else{
+precio=K*Math.exp(-rf*T)*normCDF(-d2)-S*normCDF(-d1);
+delta=normCDF(d1)-1;
+rho=-K*T*Math.exp(-rf*T)*normCDF(-d2)/100;
+}
+var gamma=normPDF(d1)/(S*vol*Math.sqrt(T));
+var theta=tipo==='call'?(-S*normPDF(d1)*vol/(2*Math.sqrt(T))-rf*K*Math.exp(-rf*T)*normCDF(d2))/365:(-S*normPDF(d1)*vol/(2*Math.sqrt(T))+rf*K*Math.exp(-rf*T)*normCDF(-d2))/365;
+var vega=S*normPDF(d1)*Math.sqrt(T)/100;
+var itm=tipo==='call'?S>K:S<K;
+var intr=tipo==='call'?Math.max(S-K,0):Math.max(K-S,0);
+var extr=precio-intr;
+document.getElementById('bs-precio').textContent=precio.toFixed(2);
+document.getElementById('bs-delta').textContent=delta.toFixed(3);
+document.getElementById('bs-gamma').textContent=gamma.toFixed(4);
+document.getElementById('bs-theta').textContent=theta.toFixed(2);
+document.getElementById('bs-vega').textContent=vega.toFixed(2);
+document.getElementById('bs-rho').textContent=rho.toFixed(2);
+document.getElementById('bs-interp').textContent=(itm?'ITM':'OTM')+' Intr='+intr.toFixed(2)+' Temp='+extr.toFixed(2)+' Delta='+delta.toFixed(2)+' Theta='+theta.toFixed(2)+'/dia';
+document.getElementById('bs-result').style.display='block';
+}
 async function fetchCCL(){try{var rq=await fetch('/api/quotes?symbols=GGAL',{signal:AbortSignal.timeout(8000)});var dq=await rq.json();var adr=dq['GGAL']&&dq['GGAL'].price;if(!adr)return;var ea=document.getElementById('ccl-adr');if(ea)ea.textContent='USD '+parseFloat(adr).toFixed(2);var rd=await fetch('https://dolarapi.com/v1/dolares/contadoconliqui',{signal:AbortSignal.timeout(8000)});var dd=await rd.json();var ccl=dd&&dd.venta;if(ccl){var ev=document.getElementById('ccl-val');if(ev)ev.textContent='setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);fetchVIX();setInterval(fetchVIX,60000);fetchCCL();setInterval(fetchCCL,120000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
 </script>
 </body>
