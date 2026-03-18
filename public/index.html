@@ -77,7 +77,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .tab-panel{display:none;}.tab-panel.active{display:block;}
 #footer{border-top:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;font-size:9px;color:var(--dim);}
 @media(max-width:900px){#main{grid-template-columns:1fr;}#sidebar{border-left:none;border-top:1px solid var(--border);}}
-#chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:400px;}#chat-messages{flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px;}.chat-msg{font-family:var(--sans);font-size:12px;line-height:1.6;}.chat-msg.user{background:rgba(255,183,0,.08);border:1px solid rgba(255,183,0,.2);border-radius:2px;padding:8px 10px;color:var(--amber);}.chat-msg.bot{background:var(--bg3);border:1px solid var(--border);border-radius:2px;padding:10px 12px;}.chat-msg.bot strong{color:var(--amber);}.chat-typing{color:var(--dim);font-size:11px;}#chat-input-row{display:flex;gap:6px;margin-top:8px;border-top:1px solid var(--border);padding-top:10px;}#chat-input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none;border-radius:2px;}#chat-input:focus{border-color:var(--amber);}#chat-send{background:var(--amber);color:#000;border:none;font-family:var(--mono);font-weight:700;font-size:11px;padding:8px 14px;cursor:pointer;border-radius:2px;}.ccl-box{border:1px solid rgba(255,183,0,.3);border-left:3px solid var(--amber);padding:14px 16px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-radius:2px;}.ccl-item{text-align:center;}.ccl-lbl{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}.ccl-val{font-size:20px;font-weight:700;color:var(--amber);}.ccl-sub{font-size:9px;color:var(--dim);margin-top:2px;}.bs-card{background:var(--bg3);border:1px solid var(--border);padding:14px;border-radius:2px;margin-bottom:12px;}.bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;}.bs-field label{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px;}.bs-field input,.bs-field select{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:13px;padding:6px 8px;outline:none;border-radius:2px;}.bs-btn{width:100%;background:var(--amber);color:#000;border:none;font-family:var(--mono);font-weight:700;font-size:11px;padding:9px;cursor:pointer;border-radius:2px;margin-top:4px;}.bs-result{margin-top:10px;display:none;}.bs-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}.bs-res-item{background:var(--bg2);border:1px solid var(--border);padding:8px;text-align:center;border-radius:2px;}.bs-res-lbl{font-size:9px;color:var(--dim);margin-bottom:3px;}.bs-res-val{font-size:16px;font-weight:700;color:var(--amber);}
 </style>
 </head>
 <body>
@@ -108,9 +107,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <button class="tab-btn" data-tab="commodities">&#9889; Commodities</button>
 <button class="tab-btn" data-tab="geopolitica">&#127894; Geopolitica</button>
 <button class="tab-btn" data-tab="calendario">&#128197; Calendario</button>
-<button class="tab-btn" data-tab="bonos">&#128202; Bonos AR</button>
-<button class="tab-btn" data-tab="opciones">&#9889; Opciones BS</button>
-<button class="tab-btn" data-tab="chat">&#129302; Chat IA</button>
 </div>
 
 <div id="main"><div id="content">
@@ -168,26 +164,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="tab-panel" id="panel-calendario"><div class="sec-title"><span class="sec-dot"></span>Agenda Economica &mdash; Esta Semana</div>
 <div id="cal-content"><div class="ai-skeleton" style="width:100%;margin-bottom:8px"></div><div class="ai-skeleton" style="width:75%"></div></div></div>
 
-<div class="tab-panel" id="panel-bonos">
-<div class="sec-title"><span class="sec-dot"></span>CCL Implicito GGAL</div>
-<div class="ccl-box" id="ccl-box"><div class="ccl-item"><div class="ccl-lbl">ADR GGAL (USD)</div><div class="ccl-val" id="ccl-adr">--</div><div class="ccl-sub">NYSE</div></div><div class="ccl-item"><div class="ccl-lbl">CCL Implicito</div><div class="ccl-val" id="ccl-val" style="color:var(--green)">--</div><div class="ccl-sub">ARS/USD</div></div><div class="ccl-item"><div class="ccl-lbl">GGAL Local</div><div class="ccl-val" id="ccl-local">--</div><div class="ccl-sub">ADR x CCL x 10</div></div></div>
-<div class="sec-title"><span class="sec-dot"></span>Bonos Soberanos AR</div>
-<div class="tv-wrap" style="height:400px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>{"width":"100%","height":"100%","symbolsGroups":[{"name":"Bonos USD","symbols":[{"name":"BCBA:AL30","displayName":"AL30"},{"name":"BCBA:GD30","displayName":"GD30"},{"name":"BCBA:AL35","displayName":"AL35"},{"name":"BCBA:GD35","displayName":"GD35"},{"name":"BCBA:AE38","displayName":"AE38"},{"name":"BCBA:GD46","displayName":"GD46"}]},{"name":"CER","symbols":[{"name":"BCBA:TX26","displayName":"TX26"},{"name":"BCBA:TX28","displayName":"TX28"},{"name":"BCBA:DICP","displayName":"DICP"}]}],"showSymbolLogo":false,"isTransparent":false,"colorTheme":"dark","locale":"es"}</script></div></div>
-<div class="sec-title" style="margin-top:16px"><span class="sec-dot"></span>Heatmap S&P 500</div>
-<div class="tv-wrap" style="height:460px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>{"exchanges":[],"dataSource":"SPX500","grouping":"sector","blockSize":"market_cap_basic","blockColor":"change","locale":"es","colorTheme":"dark","hasTopBar":true,"isDataSetEnabled":true,"isZoomEnabled":true,"hasSymbolTooltip":true,"width":"100%","height":"100%"}</script></div></div>
-</div>
-<div class="tab-panel" id="panel-opciones">
-<div class="sec-title"><span class="sec-dot"></span>Calculadora Black-Scholes</div>
-<div class="bs-card"><div style="font-size:10px;color:var(--dim);margin-bottom:10px">Precio teorico y griegas.</div>
-<div class="bs-grid"><div class="bs-field"><label>Precio Activo (S)</label><input type="number" id="bs-s" placeholder="ej: 4200" step="0.01"/></div><div class="bs-field"><label>Strike (K)</label><input type="number" id="bs-k" placeholder="ej: 4500" step="0.01"/></div><div class="bs-field"><label>Dias Vcto</label><input type="number" id="bs-dias" placeholder="ej: 30" min="1"/></div><div class="bs-field"><label>Vol impl</label><input type="number" id="bs-vol" placeholder="ej: 45" step="0.1"/></div><div class="bs-field"><label>Tasa rf</label><input type="number" id="bs-tasa" placeholder="ej: 5" value="5" step="0.1"/></div><div class="bs-field"><label>Tipo</label><select id="bs-tipo"><option value="call">CALL</option><option value="put">PUT</option></select></div></div>
-<button class="bs-btn" onclick="calcBS()">CALCULAR</button>
-<div class="bs-result" id="bs-result"><div style="font-size:10px;color:var(--dim);margin-bottom:8px">RESULTADO</div><div class="bs-result-grid"><div class="bs-res-item"><div class="bs-res-lbl">Precio</div><div class="bs-res-val" id="bs-precio">--</div></div><div class="bs-res-item"><div class="bs-res-lbl">Delta</div><div class="bs-res-val" id="bs-delta">--</div></div><div class="bs-res-item"><div class="bs-res-lbl">Gamma</div><div class="bs-res-val" id="bs-gamma">--</div></div><div class="bs-res-item"><div class="bs-res-lbl">Theta/dia</div><div class="bs-res-val" id="bs-theta">--</div></div><div class="bs-res-item"><div class="bs-res-lbl">Vega</div><div class="bs-res-val" id="bs-vega">--</div></div><div class="bs-res-item"><div class="bs-res-lbl">Rho</div><div class="bs-res-val" id="bs-rho">--</div></div></div><div id="bs-interp" style="margin-top:10px;font-size:11px;color:var(--dim);padding:8px;background:var(--bg2);border-radius:2px;border-left:2px solid var(--amber)"></div></div></div>
-<div class="sec-title" style="margin-top:16px"><span class="sec-dot"></span>Grafico GGAL</div>
-<div class="tv-wrap" style="height:380px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>{"autosize":true,"symbol":"NASDAQ:GGAL","interval":"D","timezone":"America/Argentina/Buenos_Aires","theme":"dark","style":"1","locale":"es","backgroundColor":"rgba(17,17,17,1)","studies":["STD;Bollinger_Bands","STD;RSI"],"width":"100%","height":"100%"}</script></div></div>
-</div>
-<div class="tab-panel" id="panel-chat">
-<div id="chat-wrap"><div id="chat-messages"><div class="chat-msg bot"><strong>HP Terminal IA</strong><br>Hola! /chart GGAL para grafico, /bs para opciones, o pregunta lo que quieras.</div></div><div id="chat-input-row"><input type="text" id="chat-input" placeholder="Pregunta algo o /chart GGAL..." maxlength="500"/><button id="chat-send" onclick="chatSend()">ENVIAR</button></div></div>
-</div>
 </div>
 <div id="sidebar">
 <div class="sec-title"><span class="sec-dot"></span>Analisis <span id="ai-session-badge" class="session-pre">Pre-Apertura</span></div>
@@ -222,9 +198,9 @@ cierre:'Los mercados cerraron. Basate EXCLUSIVAMENTE en datos reales de hoy. Res
 var arCtx='Incluye tambien: situacion macro Argentina actual (dolar oficial/blue/CCL reales de hoy, inflacion reciente, noticias BCRA o gobierno que impacten mercados). Si hay datos de IPC u otros indicadores macro argentinos publicados hoy, mencionarlos.';
 var prompt='Sos el analista senior de HP Securities Argentina. Hoy es '+fecha+'. Sesion actual: '+sess.l+'.\n\nINSTRUCCION CRITICA: NO inventes precios ni cifras. Solo usa datos que conozcas con certeza. Si no tenes el dato exacto, usas rangos aproximados o lo omitis.\n\n'+ctx[sess.desc]+'\n\n'+arCtx+'\n\nEscribe directamente el analisis en HTML (sin markdown, sin backticks, sin bloques de codigo). Estructura:\n1. Primera linea SOLO: {"dt":"titulo 6 palabras maximo","db":"una oracion del driver principal"}\n2. Luego el analisis de 200 palabras usando etiquetas <strong> para numeros/cifras importantes y <em> para conceptos clave. Parrafos separados por saltos de linea. Sin asteriscos, sin markdown.';try{var text=await callClaude(prompt,1000);var jm=text.match(/\{"dt":"([^"]+)","db":"([^"]+)"\}/);var dt=jm?jm[1]:'Driver',dbd=jm?jm[2]:'';var at=text.replace(/\{"dt":"[^"]+","db":"[^"]+"\}/,'').trim();if(db)db.innerHTML='<div class="driver-box"><div class="driver-title">'+sess.l+'</div><div class="driver-body"><strong style="font-size:13px">'+dt+'</strong><br><br>'+dbd+'</div></div>';if(lb)lb.style.display='none';if(ab){ab.style.display='block';ab.innerHTML=at.split('\n').filter(function(l){return l.trim();}).map(function(l){return '<p>'+l+'</p>';}).join('');}}catch(e){if(lb)lb.style.display='none';if(ab){ab.style.display='block';ab.innerHTML='<p style="color:var(--dim)">Analisis no disponible.</p>';}if(db)db.innerHTML='<div style="color:var(--dim)">No disponible</div>';}}
 async function genGeo(){var el=document.getElementById('geo-content');if(!el)return;el.innerHTML='<div class="ai-skeleton" style="width:100%;margin-bottom:8px"></div><div class="ai-skeleton" style="width:80%"></div>';try{var fecha=getAR().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});var text=await callClaude('Hoy es '+fecha+'. Sos analista geopolitico de HP Securities Argentina. Lista 5 riesgos geopoliticos y macroeconomicos relevantes esta semana para mercados argentinos (ADRs, bonos soberanos, tipo de cambio). Responde UNICAMENTE con un array JSON valido. Sin texto antes ni despues. Sin backticks. Formato exacto: [{"titulo":"texto","impacto":"alto","texto":"oracion1. oracion2."}]',800);var clean=text.trim();if(clean.indexOf('[')>0)clean=clean.substring(clean.indexOf('['));if(clean.lastIndexOf(']')<clean.length-1)clean=clean.substring(0,clean.lastIndexOf(']')+1);var items=JSON.parse(clean);el.innerHTML=items.map(function(i){var imp=i.impacto||'medio';return '<div class="geo-item '+imp+'"><span class="geo-tag tag-'+imp+'">'+imp.toUpperCase()+'</span><div style="font-size:11px;font-weight:600;margin-bottom:4px">'+i.titulo+'</div><div class="geo-body">'+i.texto+'</div></div>';}).join('');}catch(e){el.innerHTML='<div style="color:var(--dim);padding:20px 0;font-size:11px">Error cargando analisis geopolitico. <a href="#" onclick="genGeo();return false" style="color:var(--amber)">Reintentar</a></div>';}}
-async function genCalendario(){var el=document.getElementById('cal-content');if(!el)return;try{var fecha=getAR().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});var text=await callClaude('Hoy es '+fecha+'. Lista 8 eventos economicos importantes esta semana para mercados globales y argentinos (Fed FOMC, inflacion USA, INDEC, licitaciones Tesoro AR, etc). Incluye fecha y hora NY. SOLO JSON sin backticks: [{"fecha":"Mar 18","hora":"14:00 NY","pais":"us","evento":"nombre","impacto":"critico o alto o medio","previo":"valor o vacio"}]',700);var items=JSON.parse(text.trim());var flags={us:'&#127482;&#127480;',ar:'&#127462;&#127479;',eu:'&#127466;&#127482;',cn:'&#127464;&#127475;',gb:'&#127468;&#127463;',jp:'&#127471;&#127477;'};var cols={critico:'var(--red)',alto:'var(--amber)',medio:'var(--dim)'};el.innerHTML=items.map(function(i){return '<div class="cal-item"><div class="cal-dot" style="background:'+(cols[i.impacto]||'var(--dim)')+'"></div><div class="cal-time">'+i.fecha+'<br>'+i.hora+'</div><div><div class="cal-title">'+(flags[i.pais]||'&#127760;')+' '+i.evento+'</div>'+(i.previo?'<div class="cal-detail">Prev: '+i.previo+'</div>':'')+'</div></div>';}).join('');}catch(e){el.innerHTML='<div style="color:var(--dim);padding:20px 0">Calendario no disponible.</div>';}}
+async function genCalendario(){var el=document.getElementById('cal-content');if(!el)return;try{var fecha=getAR().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});var text=await callClaude('Hoy es '+fecha+'. Lista 8 eventos economicos importantes esta semana para mercados globales y argentinos (Fed FOMC, inflacion USA, INDEC, licitaciones Tesoro AR, etc). Incluye fecha y hora NY. SOLO JSON sin backticks: [{"fecha":"Mar 18","hora":"14:00 NY","pais":"us","evento":"nombre","impacto":"critico o alto o medio","previo":"valor o vacio"}]',700);var items=JSON.parse(text.replace(/```json|```/g,'').trim());var flags={us:'&#127482;&#127480;',ar:'&#127462;&#127479;',eu:'&#127466;&#127482;',cn:'&#127464;&#127475;',gb:'&#127468;&#127463;',jp:'&#127471;&#127477;'};var cols={critico:'var(--red)',alto:'var(--amber)',medio:'var(--dim)'};el.innerHTML=items.map(function(i){return '<div class="cal-item"><div class="cal-dot" style="background:'+(cols[i.impacto]||'var(--dim)')+'"></div><div class="cal-time">'+i.fecha+'<br>'+i.hora+'</div><div><div class="cal-title">'+(flags[i.pais]||'&#127760;')+' '+i.evento+'</div>'+(i.previo?'<div class="cal-detail">Prev: '+i.previo+'</div>':'')+'</div></div>';}).join('');}catch(e){el.innerHTML='<div style="color:var(--dim);padding:20px 0">Calendario no disponible.</div>';}}
 var loadedTabs=new Set();
-function showTab(id){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.tab===id);});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.toggle('active',p.id==='panel-'+id);});if(!loadedTabs.has(id)){loadedTabs.add(id);if(id==='argentina')fetchDolares();if(id==='bonos')fetchCCL();if(id==='geopolitica')genGeo();if(id==='calendario')genCalendario();}}
+function showTab(id){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.tab===id);});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.toggle('active',p.id==='panel-'+id);});if(!loadedTabs.has(id)){loadedTabs.add(id);if(id==='argentina')fetchDolares();if(id==='geopolitica')genGeo();if(id==='calendario')genCalendario();}}
 document.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){showTab(b.dataset.tab);});});
 async function fetchVIX(){try{
   const r=await fetch('/api/quotes?symbols=%5EVIX,%5EVVIX',{signal:AbortSignal.timeout(8000)});
@@ -238,59 +214,7 @@ async function fetchVIX(){try{
   const el=document.getElementById('vix-box');
   if(el)el.innerHTML='<div><span style="color:var(--dim);font-size:9px">VIX&nbsp;&nbsp;&nbsp;&nbsp;</span><strong style="color:'+vixCol+'">'+vix+'</strong><span style="color:var(--dim);font-size:10px"> ('+vixChg+'%)</span></div><div><span style="color:var(--dim);font-size:9px">VVIX&nbsp;&nbsp;&nbsp;</span><strong style="color:var(--amber)">'+vvix+'</strong><span style="color:var(--dim);font-size:10px"> ('+vvixChg+'%)</span></div>';
   }catch(e){const el=document.getElementById('vix-box');if(el)el.innerHTML='<span style="color:var(--dim);font-size:10px">N/D</span>';}}
-  function normCDF(x){var a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;var sign=x<0?-1:1;var ax=Math.abs(x);var t=1/(1+p*ax);var y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-ax*ax);return 0.5*(1+sign*y);}
-function normPDF(x){return Math.exp(-0.5*x*x)/Math.sqrt(2*Math.PI);}
-function calcBS(){
-var S=parseFloat(document.getElementById('bs-s').value);
-var K=parseFloat(document.getElementById('bs-k').value);
-var dias=parseFloat(document.getElementById('bs-dias').value);
-var vol=parseFloat(document.getElementById('bs-vol').value)/100;
-var rf=parseFloat(document.getElementById('bs-tasa').value)/100;
-var tipo=document.getElementById('bs-tipo').value;
-if([S,K,dias,vol,rf].some(isNaN)||dias<=0){alert('Completa los campos');return;}
-var T=dias/365;
-var d1=(Math.log(S/K)+(rf+0.5*vol*vol)*T)/(vol*Math.sqrt(T));
-var d2=d1-vol*Math.sqrt(T);
-var precio,delta,rho;
-if(tipo==='call'){
-precio=S*normCDF(d1)-K*Math.exp(-rf*T)*normCDF(d2);
-delta=normCDF(d1);
-rho=K*T*Math.exp(-rf*T)*normCDF(d2)/100;
-}else{
-precio=K*Math.exp(-rf*T)*normCDF(-d2)-S*normCDF(-d1);
-delta=normCDF(d1)-1;
-rho=-K*T*Math.exp(-rf*T)*normCDF(-d2)/100;
-}
-var gamma=normPDF(d1)/(S*vol*Math.sqrt(T));
-var theta=tipo==='call'?(-S*normPDF(d1)*vol/(2*Math.sqrt(T))-rf*K*Math.exp(-rf*T)*normCDF(d2))/365:(-S*normPDF(d1)*vol/(2*Math.sqrt(T))+rf*K*Math.exp(-rf*T)*normCDF(-d2))/365;
-var vega=S*normPDF(d1)*Math.sqrt(T)/100;
-var itm=tipo==='call'?S>K:S<K;
-var intr=tipo==='call'?Math.max(S-K,0):Math.max(K-S,0);
-var extr=precio-intr;
-document.getElementById('bs-precio').textContent=precio.toFixed(2);
-document.getElementById('bs-delta').textContent=delta.toFixed(3);
-document.getElementById('bs-gamma').textContent=gamma.toFixed(4);
-document.getElementById('bs-theta').textContent=theta.toFixed(2);
-document.getElementById('bs-vega').textContent=vega.toFixed(2);
-document.getElementById('bs-rho').textContent=rho.toFixed(2);
-document.getElementById('bs-interp').textContent=(itm?'ITM':'OTM')+' Intr='+intr.toFixed(2)+' Temp='+extr.toFixed(2)+' Delta='+delta.toFixed(2)+' Theta='+theta.toFixed(2)+'/dia';
-document.getElementById('bs-result').style.display='block';
-}
-async function fetchCCL(){try{var rq=await fetch('/api/quotes?symbols=GGAL',{signal:AbortSignal.timeout(8000)});var dq=await rq.json();var adr=dq['GGAL']&&dq['GGAL'].price;if(!adr)return;var ea=document.getElementById('ccl-adr');if(ea)ea.textContent='USD '+parseFloat(adr).toFixed(2);var rd=await fetch('https://dolarapi.com/v1/dolares/contadoconliqui',{signal:AbortSignal.timeout(8000)});var dd=await rd.json();var ccl=dd&&dd.venta;if(ccl){var ev=document.getElementById('ccl-val');if(ev)ev.textContent='setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);fetchVIX();setInterval(fetchVIX,60000);fetchCCL();setInterval(fetchCCL,120000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
-</script>
-</body>
-</html>
-+Math.round(ccl).toLocaleString('es-AR');var el2=document.getElementById('ccl-local');if(el2)el2.textContent='setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);fetchVIX();setInterval(fetchVIX,60000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
-</script>
-</body>
-</html>
-+Math.round(adr*ccl*10).toLocaleString('es-AR');}}catch(e){}}
-var chatHistory=[];var chatChartId=0;
-function chatSend(){var inp=document.getElementById('chat-input');var q=inp.value.trim();if(!q)return;inp.value='';chatAddMsg(q,'user');if(q.toLowerCase().startsWith('/bs')){showTab('opciones');chatAddMsg('Abri Opciones BS.','bot');return;}if(q.toLowerCase().startsWith('/chart')){var sym=q.split(' ').slice(1).join('').trim().toUpperCase()||'NASDAQ:GGAL';var mp={'GGAL':'NASDAQ:GGAL','YPF':'NYSE:YPF','BMA':'NYSE:BMA','MELI':'NASDAQ:MELI','NVDA':'NASDAQ:NVDA'};if(!sym.includes(':')&&mp[sym])sym=mp[sym];else if(!sym.includes(':'))sym='NASDAQ:'+sym;chatAddChart(sym);return;}callClaude('Sos analista HP Market Terminal Argentina. Conciso max 100 palabras sin markdown.\n'+q,400).then(function(resp){chatAddMsg(resp,'bot');}).catch(function(){chatAddMsg('Error.','bot');});}
-function chatAddMsg(t,r){var b=document.getElementById('chat-messages');if(!b)return;var d=document.createElement('div');d.className='chat-msg '+r;d.innerHTML=t;b.appendChild(d);b.scrollTop=b.scrollHeight;}
-function chatAddChart(sym){var b=document.getElementById('chat-messages');if(!b)return;chatChartId++;var cid='cc'+chatChartId;var d=document.createElement('div');d.className='chat-msg bot';d.innerHTML='<strong>Grafico: '+sym+'</strong><div style="height:260px;margin-top:6px;border:1px solid var(--border);border-radius:2px;overflow:hidden"><div id="'+cid+'" style="height:100%"></div></div>';b.appendChild(d);b.scrollTop=b.scrollHeight;var s=document.createElement('script');s.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';s.async=true;s.innerHTML=JSON.stringify({autosize:true,symbol:sym,interval:'D',timezone:'America/Argentina/Buenos_Aires',theme:'dark',style:'1',locale:'es',container_id:cid,backgroundColor:'rgba(17,17,17,1)'});document.getElementById(cid).appendChild(s);}
-document.getElementById('chat-input').addEventListener('keydown',function(e){if(e.key==='Enter')chatSend();});
-function init(){setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);fetchVIX();setInterval(fetchVIX,60000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
+  function init(){setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);fetchVIX();setInterval(fetchVIX,60000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
 </script>
 </body>
 </html>
