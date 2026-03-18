@@ -80,10 +80,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </style>
 </head>
 <body>
-<div id="ticker-tape" style="display:none"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq"},{"proName":"TVC:DJI","title":"Dow Jones"},{"proName":"TVC:VIX","title":"VIX"},{"description":"MERVAL","proName":"BCBA:IMV"},{"proName":"TVC:GOLD","title":"Oro"},{"proName":"TVC:USOIL","title":"WTI"},{"proName":"BITSTAMP:BTCUSD","title":"BTC"},{"description":"GGAL","proName":"NASDAQ:GGAL"},{"description":"YPF","proName":"NYSE:YPF"},{"description":"MELI","proName":"NASDAQ:MELI"},{"proName":"FX:EURUSD","title":"EUR/USD"},{"proName":"CBOT:ZS1!","title":"Soja"},{"proName":"CBOT:ZC1!","title":"Maiz"}],"showSymbolLogo":true,"isTransparent":false,"displayMode":"regular","colorTheme":"dark","locale":"es"}
-</script></div>
 <div id="login-screen">
 <div class="login-box">
 <div class="login-logo">HP <span style="color:var(--dim)">//</span> MARKET</div>
@@ -94,9 +90,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </div>
 </div>
 
-<div id="app" style="display:none">
+<div id="app">
 
-</div>
+<div id="ticker-tape"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq"},{"proName":"TVC:DJI","title":"Dow Jones"},{"proName":"TVC:VIX","title":"VIX"},{"description":"MERVAL","proName":"BCBA:IMV"},{"proName":"TVC:GOLD","title":"Oro"},{"proName":"TVC:USOIL","title":"WTI"},{"proName":"BITSTAMP:BTCUSD","title":"BTC"},{"description":"GGAL","proName":"NASDAQ:GGAL"},{"description":"YPF","proName":"NYSE:YPF"},{"description":"MELI","proName":"NASDAQ:MELI"},{"proName":"FX:EURUSD","title":"EUR/USD"},{"proName":"CBOT:ZS1!","title":"Soja"},{"proName":"CBOT:ZC1!","title":"Maiz"}],"showSymbolLogo":true,"isTransparent":false,"displayMode":"regular","colorTheme":"dark","locale":"es"}
+</script></div></div>
 
 <div id="topbar"><div style="display:flex;align-items:center;gap:12px"><div class="logo">HP <span>//</span> Market Terminal</div><div class="topbar-clock" id="clock">--:-- hs AR</div></div><div id="mkt-badge" class="badge-closed">CERRADO</div></div>
 
@@ -180,7 +179,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 <script>
 var PIN='290585';
-function checkPin(){var v=document.getElementById('pin-input').value;if(v===PIN){document.getElementById('login-screen').style.display='none';document.getElementById('ticker-tape').style.display='block';document.getElementById('app').style.display='block';init();}else{document.getElementById('pin-err').style.display='block';document.getElementById('pin-input').value='';document.getElementById('pin-input').focus();}}
+function checkPin(){var v=document.getElementById('pin-input').value;if(v===PIN){document.getElementById('login-screen').style.display='none';init();}else{document.getElementById('pin-err').style.display='block';document.getElementById('pin-input').value='';document.getElementById('pin-input').focus();}}
 document.getElementById('pin-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkPin();});
 var MKT_OH=10,MKT_OM=30,MKT_CH=17;
 function getAR(){return new Date(new Date().toLocaleString('en-US',{timeZone:'America/Argentina/Buenos_Aires'}));}
