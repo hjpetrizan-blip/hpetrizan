@@ -86,7 +86,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="login-box">
 <div class="login-logo">HP <span style="color:var(--dim)">//</span> MARKET</div>
 <div class="login-sub">TERMINAL &middot; BT SECURITIES ARGENTINA</div>
-<input type="password" class="login-input" id="pin-input" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;" maxlength="6" autofocus/>
+<input type="number" class="login-input" id="pin-input" placeholder="000000" maxlength="6" autofocus inputmode="numeric"/>
 <button class="login-btn" onclick="checkPin()">INGRESAR</button>
 <div class="login-err" id="pin-err">PIN incorrecto</div>
 </div>
@@ -204,8 +204,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </div>
 
 <script>
-var PIN='290585';
-function checkPin(){var v=document.getElementById('pin-input').value;if(v===PIN){document.getElementById('login-screen').style.display='none';init();}else{document.getElementById('pin-err').style.display='block';document.getElementById('pin-input').value='';document.getElementById('pin-input').focus();}}
+var TOTP_SECRET="HPBTSECURITIES2026A";
+function b32dec(s){var a="ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",b=0,q=0,r=[];s=s.toUpperCase().replace(/=+$/,"");for(var i=0;i<s.length;i++){var v=a.indexOf(s[i]);if(v<0)continue;b=(b<<5)|v;q+=5;if(q>=8){q-=8;r.push((b>>q)&255);}}return new Uint8Array(r);}
+function sha1b(data){var h0=0x67452301,h1=0xEFCDAB89,h2=0x98BADCFE,h3=0x10325476,h4=0xC3D2E1F0,ml=data.length*8,total=Math.ceil((data.length+9)/64)*64,full=new Uint8Array(total);full.set(data);full[data.length]=0x80;var dv=new DataView(full.buffer);dv.setUint32(total-4,ml>>>0,false);for(var b=0;b<total;b+=64){var W=new Uint32Array(80),ch=new DataView(full.buffer,b,64);for(var i=0;i<16;i++)W[i]=ch.getUint32(i*4,false);for(var i=16;i<80;i++){var x=W[i-3]^W[i-8]^W[i-14]^W[i-16];W[i]=(x<<1)|(x>>>31);}var a2=h0,b2=h1,c2=h2,d2=h3,e2=h4;for(var i=0;i<80;i++){var fn,k2;if(i<20){fn=(b2&c2)|(~b2&d2);k2=0x5A827999;}else if(i<40){fn=b2^c2^d2;k2=0x6ED9EBA1;}else if(i<60){fn=(b2&c2)|(b2&d2)|(c2&d2);k2=0x8F1BBCDC;}else{fn=b2^c2^d2;k2=0xCA62C1D6;}var tmp=(((a2<<5)|(a2>>>27))+fn+e2+k2+W[i])>>>0;e2=d2;d2=c2;c2=(b2<<30)|(b2>>>2);b2=a2;a2=tmp;}h0=(h0+a2)>>>0;h1=(h1+b2)>>>0;h2=(h2+c2)>>>0;h3=(h3+d2)>>>0;h4=(h4+e2)>>>0;}var res=new Uint8Array(20),rv=new DataView(res.buffer);rv.setUint32(0,h0,false);rv.setUint32(4,h1,false);rv.setUint32(8,h2,false);rv.setUint32(12,h3,false);rv.setUint32(16,h4,false);return res;}
+function hmac1(key,msg){var bl=64,k=new Uint8Array(bl);if(key.length<=bl)k.set(key);else{var kh=sha1b(key);k.set(kh);}var ip=new Uint8Array(bl+msg.length),op=new Uint8Array(bl+20);for(var i=0;i<bl;i++){ip[i]=k[i]^0x36;op[i]=k[i]^0x5c;}ip.set(msg,bl);var ih=sha1b(ip);op.set(ih,bl);return sha1b(op);}
+function calcTotp(offset){var key=b32dec(TOTP_SECRET),t=Math.floor(Date.now()/1000/30)+(offset||0),msg=new Uint8Array(8),dv=new DataView(msg.buffer);dv.setUint32(4,t>>>0,false);var mac=hmac1(key,msg),o=mac[19]&0xf,code=((mac[o]&0x7f)<<24|(mac[o+1]&0xff)<<16|(mac[o+2]&0xff)<<8|(mac[o+3]&0xff))%1000000;return String(code).padStart(6,"0");}
+function checkPin(){var v=document.getElementById("pin-input").value;if(v===calcTotp(0)||v===calcTotp(-1)){document.getElementById("login-screen").style.display="none";init();}else{document.getElementById("pin-err").style.display="block";document.getElementById("pin-input").value="";document.getElementById("pin-input").focus();}}
 document.getElementById('pin-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkPin();});
 var MKT_OH=10,MKT_OM=30,MKT_CH=17;
 function getAR(){return new Date(new Date().toLocaleString('en-US',{timeZone:'America/Argentina/Buenos_Aires'}));}
