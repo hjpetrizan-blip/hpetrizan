@@ -85,7 +85,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div id="login-screen">
 <div class="login-box">
 <div class="login-logo">HP <span style="color:var(--dim)">//</span> MARKET</div>
-<div class="login-sub">TERMINAL &middot; BT SECURITIES ARGENTINA</div>
+<div class="login-sub">HUGO PETRIZAN &middot; ID&Oacute;NEO CNV</div>
 <input type="number" class="login-input" id="pin-input" placeholder="000000" maxlength="6" autofocus inputmode="numeric"/>
 <button class="login-btn" onclick="checkPin()">INGRESAR</button>
 <div class="login-err" id="pin-err">PIN incorrecto</div>
@@ -250,5 +250,10 @@ function fetchCCL(){fetch("/api/quotes?symbols=GGAL",{signal:AbortSignal.timeout
 var chatChartId=0;function chatSend(){var i=document.getElementById("chat-input");var q=i.value.trim();if(!q)return;i.value="";chatAddMsg(q,"user");if(q.toLowerCase().startsWith("/chart")){var s=q.split(" ").slice(1).join("").trim().toUpperCase()||"NASDAQ:GGAL";chatAddChart(s);return;}callClaude("Sos analista HP Market Terminal. Conciso max 100 palabras sin markdown.\n"+q,400).then(function(r){chatAddMsg(r,"bot");}).catch(function(){chatAddMsg("Error.","bot");});}function chatAddMsg(t,r){var b=document.getElementById("chat-messages");if(!b)return;var d=document.createElement("div");d.className="chat-msg "+r;d.innerHTML=t;b.appendChild(d);b.scrollTop=b.scrollHeight;}function chatAddChart(s){var b=document.getElementById("chat-messages");if(!b)return;chatChartId++;var c="cc"+chatChartId;var d=document.createElement("div");d.className="chat-msg bot";d.innerHTML="<strong>Grafico: "+s+"</strong><div style=\"height:260px;margin-top:6px\"><div id=\""+c+"\" style=\"height:100%\"></div></div>";b.appendChild(d);b.scrollTop=b.scrollHeight;var sc=document.createElement("script");sc.src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";sc.async=true;sc.innerHTML=JSON.stringify({autosize:true,symbol:s,interval:"D",theme:"dark",style:"1",locale:"es",container_id:c,backgroundColor:"rgba(17,17,17,1)"});document.getElementById(c).appendChild(sc);}document.getElementById("chat-input").addEventListener("keydown",function(e){if(e.key==="Enter")chatSend();});
 function init(){setInterval(updateClock,1000);updateClock();fetchDolares();setInterval(fetchDolares,120000);fetchVIX();setInterval(fetchVIX,60000);fetchCCL();setInterval(fetchCCL,120000);genAI();setInterval(genAI,3600000);setTimeout(function(){genGeo();},3000);setTimeout(function(){genCalendario();},6000);}
 </script>
+
+<div style="position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:6px 16px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:9px;color:var(--dim);z-index:50;letter-spacing:0.5px;">
+  <span>Hugo Petrizan &mdash; Id&oacute;neo CNV &mdash; Mat. 232</span>
+  <span>&copy; 2025 Hugo Petrizan. Todos los derechos reservados. La informaci&oacute;n provista es de car&aacute;cter referencial y no constituye asesoramiento financiero. Uso interno.</span>
+</div>
 </body>
 </html>
