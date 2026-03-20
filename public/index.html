@@ -1,146 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HP Market Terminal</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<style>
-:root{--bg:#0a0a0a;--bg2:#111;--bg3:#181818;--border:#2a2a2a;--text:#e8e0cc;--dim:#666;--amber:#ffb700;--green:#00d084;--red:#ff3b3b;--blue:#4a9eff;--cyan:#00c8d4;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:12px;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9000;}
-#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;}
-.login-box{background:var(--bg2);border:1px solid var(--amber);padding:40px;width:320px;text-align:center;}
-.login-logo{font-family:var(--sans);font-weight:700;font-size:22px;color:var(--amber);letter-spacing:3px;margin-bottom:4px;}
-.login-sub{font-size:10px;color:var(--dim);letter-spacing:1px;margin-bottom:28px;}
-.login-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:22px;padding:14px;text-align:center;letter-spacing:10px;margin-bottom:12px;outline:none;}
-.login-input:focus{border-color:var(--amber);}
-.login-btn{width:100%;background:var(--amber);color:#000;font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:2px;padding:12px;border:none;cursor:pointer;text-transform:uppercase;}
-.login-err{color:var(--red);font-size:11px;margin-top:8px;display:none;}
-#ticker-tape{background:#000;border-bottom:1px solid var(--amber);height:56px;overflow:hidden;}
-#ticker-tape .tradingview-widget-container{height:56px;}
-#topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;height:34px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.logo{font-family:var(--sans);font-weight:700;font-size:13px;color:var(--amber);letter-spacing:2px;}
-.logo span{color:var(--dim);}
-.topbar-clock{font-size:11px;color:var(--dim);border-left:1px solid var(--border);padding-left:12px;}
-#mkt-badge{font-size:10px;font-weight:600;letter-spacing:1px;padding:2px 8px;border-radius:2px;text-transform:uppercase;}
-.badge-open{background:rgba(0,208,132,.15);color:var(--green);border:1px solid rgba(0,208,132,.3);}
-.badge-pre{background:rgba(255,183,0,.15);color:var(--amber);border:1px solid rgba(255,183,0,.3);}
-.badge-closed{background:rgba(102,102,102,.15);color:var(--dim);border:1px solid var(--border);}
-#tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;overflow-x:auto;scrollbar-width:none;}
-.tab-btn{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--dim);padding:9px 14px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase;}
-.tab-btn.active{color:var(--amber);border-bottom-color:var(--amber);}
-#main{display:grid;grid-template-columns:1fr 300px;min-height:calc(100vh - 110px);}
-#content{padding:16px;overflow:auto;}
-#sidebar{border-left:1px solid var(--border);background:var(--bg2);padding:16px;overflow-y:auto;}
-.sec-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);font-weight:600;margin:16px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
-.sec-title:first-child{margin-top:0;}
-.sec-dot{width:4px;height:4px;border-radius:50%;background:var(--amber);flex-shrink:0;}
-.tv-wrap{background:var(--bg3);border:1px solid var(--border);margin-bottom:12px;border-radius:2px;overflow:hidden;}
-.dolar-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
-.dolar-card{background:var(--bg3);border:1px solid var(--border);padding:8px 10px;}
-.dc-lbl{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
-.dc-val{font-size:16px;font-weight:700;color:var(--amber);}
-.dc-comp{font-size:9px;color:var(--dim);margin-top:1px;}
-.brecha-bar{background:var(--bg3);border:1px solid var(--border);padding:8px 10px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
-.b-lbl{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;}
-.b-val{font-size:13px;font-weight:600;}
-#ai-session-badge{font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:2px;text-transform:uppercase;font-weight:600;}
-.session-pre{background:rgba(255,183,0,.15);color:var(--amber);border:1px solid rgba(255,183,0,.3);}
-.session-rueda{background:rgba(0,208,132,.15);color:var(--green);border:1px solid rgba(0,208,132,.3);}
-.session-cierre{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.3);}
-#ai-box{font-family:var(--sans);font-size:12px;line-height:1.7;color:#c8c0aa;}
-#ai-box p{margin-bottom:8px;}
-#ai-box strong{color:var(--amber);}
-#ai-box em{color:var(--cyan);font-style:normal;}
-.ai-skeleton{height:10px;background:var(--border);border-radius:2px;animation:pulse 1.4s ease-in-out infinite;margin-bottom:6px;}
-@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:.8;}}
-.driver-box{background:linear-gradient(135deg,rgba(255,183,0,.06),rgba(255,183,0,.02));border:1px solid rgba(255,183,0,.2);border-left:3px solid var(--amber);padding:10px 12px;margin-bottom:12px;}
-.driver-title{font-size:10px;font-weight:600;color:var(--amber);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;}
-.driver-body{font-family:var(--sans);font-size:12px;line-height:1.6;color:var(--text);}
-.cal-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
-.cal-item:last-child{border-bottom:none;}
-.cal-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:3px;}
-.cal-time{flex-shrink:0;width:68px;font-size:10px;color:var(--dim);line-height:1.4;}
-.cal-title{font-size:11px;font-weight:500;}
-.cal-detail{font-size:10px;color:var(--dim);}
-.geo-item{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--border);padding:10px 12px;margin-bottom:8px;}
-.geo-item.alto{border-left-color:var(--red);}
-.geo-item.medio{border-left-color:var(--amber);}
-.geo-item.bajo{border-left-color:var(--green);}
-.geo-tag{display:inline-block;font-size:8px;letter-spacing:1px;padding:1px 5px;text-transform:uppercase;margin-bottom:4px;font-weight:600;}
-.tag-alto{background:rgba(255,59,59,.1);color:var(--red);border:1px solid rgba(255,59,59,.2);}
-.tag-medio{background:rgba(255,183,0,.1);color:var(--amber);border:1px solid rgba(255,183,0,.2);}
-.tag-bajo{background:rgba(0,208,132,.1);color:var(--green);border:1px solid rgba(0,208,132,.2);}
-.geo-body{font-family:var(--sans);font-size:11px;color:var(--dim);line-height:1.5;margin-top:4px;}
-.tab-panel{display:none;}.tab-panel.active{display:block;}
-#footer{border-top:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;font-size:9px;color:var(--dim);}
-@media(max-width:900px){#main{grid-template-columns:1fr;}#sidebar{border-left:none;border-top:1px solid var(--border);}}
-.ccl-box{border:1px solid rgba(255,183,0,.3);border-left:3px solid var(--amber);padding:14px 16px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-radius:2px;}.ccl-item{text-align:center;}.ccl-lbl{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}.ccl-val{font-size:20px;font-weight:700;color:var(--amber);}.ccl-sub{font-size:9px;color:var(--dim);margin-top:2px;}#chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:400px;}#chat-messages{flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px;}.chat-msg{font-family:var(--sans);font-size:12px;line-height:1.6;}.chat-msg.user{background:rgba(255,183,0,.08);border:1px solid rgba(255,183,0,.2);border-radius:2px;padding:8px 10px;color:var(--amber);}.chat-msg.bot{background:var(--bg3);border:1px solid var(--border);border-radius:2px;padding:10px 12px;}.chat-msg.bot strong{color:var(--amber);}.chat-typing{color:var(--dim);font-size:11px;}#chat-input-row{display:flex;gap:6px;margin-top:8px;border-top:1px solid var(--border);padding-top:10px;}#chat-input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none;border-radius:2px;}#chat-input:focus{border-color:var(--amber);}#chat-send{background:var(--amber);color:#000;border:none;font-family:var(--mono);font-weight:700;font-size:11px;padding:8px 14px;cursor:pointer;border-radius:2px;}
-.bs-card{background:var(--bg3);border:1px solid var(--border);padding:14px;border-radius:2px;margin-bottom:12px;}.bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;}.bs-field label{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px;}.bs-field input,.bs-field select{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:13px;padding:6px 8px;outline:none;border-radius:2px;}.bs-btn{width:100%;background:var(--amber);color:#000;border:none;font-family:var(--mono);font-weight:700;font-size:11px;padding:9px;cursor:pointer;border-radius:2px;margin-top:4px;}.bs-result{margin-top:10px;display:none;}.bs-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}.bs-res-item{background:var(--bg2);border:1px solid var(--border);padding:8px;text-align:center;border-radius:2px;}.bs-res-lbl{font-size:9px;color:var(--dim);margin-bottom:3px;}.bs-res-val{font-size:16px;font-weight:700;color:var(--amber);}
-.watch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:16px;}.watch-card{background:var(--bg3);border:1px solid var(--border);padding:10px 12px;border-radius:2px;}.watch-sym{font-family:var(--mono);font-size:11px;color:var(--amber);font-weight:700;letter-spacing:1px;}.watch-price{font-size:18px;font-weight:700;color:var(--text);margin:4px 0;}.watch-chg{font-size:11px;font-family:var(--mono);}.watch-add{display:flex;gap:6px;margin-bottom:12px;}.watch-inp{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:6px 8px;outline:none;border-radius:2px;}.watch-inp:focus{border-color:var(--amber);}.watch-btn{background:var(--amber);color:#000;border:none;font-family:var(--mono);font-weight:700;font-size:11px;padding:6px 12px;cursor:pointer;border-radius:2px;}.news-list{display:flex;flex-direction:column;gap:8px;}.news-item{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--amber);padding:10px 12px;border-radius:2px;cursor:pointer;}.news-item:hover{border-color:var(--amber);background:rgba(255,183,0,.05);}.news-src{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}.news-title{font-size:12px;color:var(--text);line-height:1.4;}.news-time{font-size:9px;color:var(--dim);margin-top:3px;}.par-card{background:var(--bg3);border:1px solid var(--border);padding:16px;border-radius:2px;margin-bottom:12px;}.par-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}.par-field label{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px;}.par-field input,.par-field select{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:14px;padding:7px 8px;outline:none;border-radius:2px;}.par-btn{width:100%;background:var(--amber);color:#000;border:none;font-family:var(--mono);font-weight:700;font-size:11px;padding:9px;cursor:pointer;border-radius:2px;margin-top:4px;}.par-result{margin-top:12px;display:none;background:var(--bg2);border:1px solid var(--border);padding:14px;border-radius:2px;}.par-res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px;}.par-res-item{text-align:center;}.par-res-lbl{font-size:9px;color:var(--dim);margin-bottom:3px;}.par-res-val{font-size:18px;font-weight:700;color:var(--amber);}.par-signal{margin-top:12px;padding:10px;border-radius:2px;text-align:center;font-family:var(--mono);font-size:12px;font-weight:700;}.alert-bar{position:fixed;top:40px;left:0;right:0;z-index:200;padding:8px 16px;font-family:var(--mono);font-size:12px;font-weight:700;text-align:center;display:none;animation:blink 1s infinite;}.alert-bar.up{background:rgba(0,200,100,.2);border-bottom:2px solid #00c864;color:#00c864;}.alert-bar.dn{background:rgba(255,60,60,.2);border-bottom:2px solid #ff3c3c;color:#ff3c3c;}@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
-</style>
-</head>
-<body>
-<div id="ccl-alert-bar" class="alert-bar"></div>
-<div id="login-screen">
-<div class="login-box">
-<div class="login-logo">HP <span style="color:var(--dim)">//</span> MARKET</div>
-<div class="login-sub">HUGO PETRIZAN &middot; ID&Oacute;NEO CNV</div>
-<input type="number" class="login-input" id="pin-input" placeholder="000000" maxlength="6" autofocus inputmode="numeric"/>
-<button class="login-btn" onclick="checkPin()">INGRESAR</button>
-<div class="login-err" id="pin-err">PIN incorrecto</div>
+<div class="tab-panel" id="panel-usa">
+<div class="sec-title"><span class="sec-dot"></span>Indices USA</div>
+<div class="tv-wrap" style="height:250px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>{"width":"100%","height":"100%","symbolsGroups":[{"name":"Indices","symbols":[{"name":"FOREXCOM:SPXUSD","displayName":"S&P 500"},{"name":"FOREXCOM:NSXUSD","displayName":"Nasdaq 100"},{"name":"FOREXCOM:DJI","displayName":"Dow Jones"},{"name":"TVC:RUT","displayName":"Russell 2000"},{"name":"TVC:VIX","displayName":"VIX"},{"name":"TVC:VVIX","displayName":"VVIX"}]}],"showSymbolLogo":false,"isTransparent":false,"colorTheme":"dark","locale":"es"}</script></div></div>
+<div class="sec-title" style="margin-top:10px"><span class="sec-dot"></span>Futuros USA</div>
+<div class="tv-wrap" style="height:200px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>{"width":"100%","height":"100%","symbolsGroups":[{"name":"Futuros","symbols":[{"name":"CME_MINI:ES1!","displayName":"S&P Futuro"},{"name":"CME_MINI:NQ1!","displayName":"Nasdaq Futuro"},{"name":"CBOT_MINI:YM1!","displayName":"Dow Futuro"},{"name":"NYMEX:CL1!","displayName":"WTI Crudo"},{"name":"NYMEX:NG1!","displayName":"Gas Natural"}]}],"showSymbolLogo":false,"isTransparent":false,"colorTheme":"dark","locale":"es"}</script></div></div>
+<div class="sec-title" style="margin-top:10px"><span class="sec-dot"></span>Bonos USA y Big Tech</div>
+<div class="tv-wrap" style="height:260px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>{"width":"100%","height":"100%","symbolsGroups":[{"name":"Bonos","symbols":[{"name":"TVC:US10Y","displayName":"T-Note 10Y"},{"name":"TVC:US02Y","displayName":"T-Note 2Y"},{"name":"TVC:US30Y","displayName":"T-Bond 30Y"}]},{"name":"Big Tech","symbols":[{"name":"NASDAQ:AAPL","displayName":"Apple"},{"name":"NASDAQ:MSFT","displayName":"Microsoft"},{"name":"NASDAQ:NVDA","displayName":"NVIDIA"},{"name":"NASDAQ:AMZN","displayName":"Amazon"},{"name":"NASDAQ:META","displayName":"Meta"},{"name":"NASDAQ:TSLA","displayName":"Tesla"}]}],"showSymbolLogo":false,"isTransparent":false,"colorTheme":"dark","locale":"es"}</script></div></div>
 </div>
-</div>
-
-<div id="app">
-
-<div id="ticker-tape"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq"},{"proName":"FOREXCOM:DJI","title":"Dow Jones"},{"proName":"CAPITALCOM:VIX","title":"VIX"},{"description":"MERVAL","proName":"BCBA:IMV"},{"proName":"TVC:GOLD","title":"Oro"},{"proName":"TVC:USOIL","title":"WTI"},{"proName":"BITSTAMP:BTCUSD","title":"BTC"},{"description":"GGAL","proName":"NASDAQ:GGAL"},{"description":"YPF","proName":"NYSE:YPF"},{"description":"MELI","proName":"NASDAQ:MELI"},{"proName":"FX:EURUSD","title":"EUR/USD"},{"proName":"CBOT:ZS1!","title":"Soja"},{"proName":"CBOT:ZC1!","title":"Maiz"}],"showSymbolLogo":true,"isTransparent":false,"displayMode":"regular","colorTheme":"dark","locale":"es"}
-</script></div></div>
-
-<div id="topbar"><div style="display:flex;align-items:center;gap:12px"><div class="logo">HP <span>//</span> Market Terminal</div><div class="topbar-clock" id="clock">--:-- hs AR</div></div><div id="mkt-badge" class="badge-closed">CERRADO</div></div>
-
-<div id="tabs">
-<button class="tab-btn active" data-tab="usa">&#127482;&#127480; USA</button>
-<button class="tab-btn" data-tab="argentina">&#127462;&#127479; Argentina</button>
-<button class="tab-btn" data-tab="monedas">&#128178; Monedas</button>
-<button class="tab-btn" data-tab="mundo">&#127757; Mundo</button>
-<button class="tab-btn" data-tab="commodities">&#9889; Commodities</button>
-<button class="tab-btn" data-tab="geopolitica">&#127894; Geopolitica</button>
-<button class="tab-btn" data-tab="calendario">&#128197; Calendario</button>
-<button class="tab-btn" data-tab="bonos">&#128202; Bonos AR</button>
-<button class="tab-btn" data-tab="opciones">&#9889; Opciones BS</button>
-<button class="tab-btn" data-tab="heatmap">&#127918; Heatmap</button>
-<button class="tab-btn" data-tab="ggal">&#127919; GGAL</button>
-<button class="tab-btn" data-tab="watchlist">&#128200; Watchlist</button>
-<button class="tab-btn" data-tab="noticias">&#128240; Noticias AR</button>
-<button class="tab-btn" data-tab="paridad">&#9878; Paridad ADR</button>
-<button class="tab-btn" data-tab="chat">&#129302; Chat IA</button>
-</div>
-
-<div id="main"><div id="content">
-
-<div class="tab-panel active" id="panel-usa">
-<div class="sec-title"><span class="sec-dot"></span>Indices USA &mdash; Tiempo Real</div>
-<div class="tv-wrap" style="height:220px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-{"width":"100%","height":"100%","symbolsGroups":[{"name":"Indices","symbols":[{"name":"FOREXCOM:SPXUSD","displayName":"S&P 500"},{"name":"FOREXCOM:NSXUSD","displayName":"Nasdaq 100"},{"name":"FOREXCOM:DJI","displayName":"Dow Jones"},{"name":"CURRENCYCOM:US2000","displayName":"Russell 2000"},{"name":"CAPITALCOM:VIX","displayName":"VIX"}]}],"showSymbolLogo":true,"isTransparent":false,"colorTheme":"dark","locale":"es"}
-</script></div></div>
-<div class="sec-title"><span class="sec-dot"></span>Futuros &amp; Bonos</div>
-<div class="tv-wrap" style="height:240px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-{"width":"100%","height":"100%","symbolsGroups":[{"name":"Volatilidad & FX","symbols":[{"name":"CAPITALCOM:VIX","displayName":"VIX"},{"name":"TVC:DXY","displayName":"DXY Dollar"},{"name":"TVC:GOLD","displayName":"Oro"},{"name":"TVC:USOIL","displayName":"WTI"}]},{"name":"Bonos USA","symbols":[{"name":"TVC:US10Y","displayName":"T-Note 10Y"},{"name":"TVC:US30Y","displayName":"T-Bond 30Y"},{"name":"TVC:US02Y","displayName":"T-Note 2Y"}]}],"showSymbolLogo":true,"isTransparent":false,"colorTheme":"dark","locale":"es"}
-</script></div></div>
-<div class="sec-title"><span class="sec-dot"></span>Big Tech &amp; Defensa</div>
-<div class="tv-wrap" style="height:340px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-{"width":"100%","height":"100%","symbolsGroups":[{"name":"Big Tech","symbols":[{"name":"NASDAQ:AAPL","displayName":"Apple"},{"name":"NASDAQ:MSFT","displayName":"Microsoft"},{"name":"NASDAQ:NVDA","displayName":"NVIDIA"},{"name":"NASDAQ:GOOGL","displayName":"Alphabet"},{"name":"NASDAQ:AMZN","displayName":"Amazon"},{"name":"NASDAQ:META","displayName":"Meta"},{"name":"NASDAQ:TSLA","displayName":"Tesla"}]},{"name":"Defensa","symbols":[{"name":"NYSE:LMT","displayName":"Lockheed"},{"name":"NYSE:RTX","displayName":"RTX"},{"name":"NYSE:NOC","displayName":"Northrop"},{"name":"NYSE:BA","displayName":"Boeing"},{"name":"NYSE:GD","displayName":"Gen. Dynamics"}]}],"showSymbolLogo":true,"isTransparent":false,"colorTheme":"dark","locale":"es"}
-</script></div></div>
-</div>
-
 <div class="tab-panel" id="panel-argentina">
 <div class="sec-title"><span class="sec-dot"></span>Tipo de Cambio</div>
 <div class="dolar-grid"><div class="dolar-card"><div class="dc-lbl">Oficial BNA</div><div class="dc-val" id="fx-oficial">-</div><div class="dc-comp" id="fx-oficial-comp">-</div></div><div class="dolar-card"><div class="dc-lbl">Blue</div><div class="dc-val" id="fx-blue">-</div><div class="dc-comp" id="fx-blue-comp">-</div></div><div class="dolar-card"><div class="dc-lbl">MEP / Bolsa</div><div class="dc-val" id="fx-mep">-</div><div class="dc-comp" id="fx-mep-comp">-</div></div><div class="dolar-card"><div class="dc-lbl">CCL</div><div class="dc-val" id="fx-ccl">-</div><div class="dc-comp" id="fx-ccl-comp">-</div></div><div class="dolar-card"><div class="dc-lbl">Cripto/USDT</div><div class="dc-val" id="fx-cripto">-</div><div class="dc-comp" id="fx-cripto-comp">-</div></div><div class="dolar-card"><div class="dc-lbl">Tarjeta</div><div class="dc-val" id="fx-tarjeta">-</div><div class="dc-comp" id="fx-tarjeta-comp">-</div></div></div>
@@ -155,7 +20,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="tab-panel" id="panel-monedas"><div class="sec-title"><span class="sec-dot"></span>Divisas &mdash; Tiempo Real</div>
 <div class="tv-wrap" style="height:440px"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-{"width":"100%","height":"100%","symbolsGroups":[{"name":"Latinoamerica","symbols":[{"name":"FX:USDBRL","displayName":"USD/BRL"},{"name":"FX:USDMXN","displayName":"USD/MXN"},{"name":"FX:USDCLP","displayName":"USD/CLP"},{"name":"FX:USDCOP","displayName":"USD/COP"},{"name":"BMFBOVESPA:IBOV","displayName":"Bovespa"}]},{"name":"G10","symbols":[{"name":"FX:EURUSD","displayName":"EUR/USD"},{"name":"FX:GBPUSD","displayName":"GBP/USD"},{"name":"FX:USDJPY","displayName":"USD/JPY"},{"name":"FX:USDCHF","displayName":"USD/CHF"},{"name":"FX:AUDUSD","displayName":"AUD/USD"},{"name":"TVC:DXY","displayName":"Dolar Index"}]}],"showSymbolLogo":true,"isTransparent":false,"colorTheme":"dark","locale":"es"}
+{"width":"100%","height":"100%","symbolsGroups":[{"name":"Latinoamerica","symbols":[{"name":"OANDA:USDBRL","displayName":"USD/BRL"},{"name":"FX:USDMXN","displayName":"USD/MXN"},{"name":"FX:USDCLP","displayName":"USD/CLP"},{"name":"FX:USDCOP","displayName":"USD/COP"},{"name":"BMFBOVESPA:IBOV","displayName":"Bovespa"}]},{"name":"G10","symbols":[{"name":"FX:EURUSD","displayName":"EUR/USD"},{"name":"FX:GBPUSD","displayName":"GBP/USD"},{"name":"FX:USDJPY","displayName":"USD/JPY"},{"name":"FX:USDCHF","displayName":"USD/CHF"},{"name":"FX:AUDUSD","displayName":"AUD/USD"},{"name":"TVC:DXY","displayName":"Dolar Index"}]}],"showSymbolLogo":true,"isTransparent":false,"colorTheme":"dark","locale":"es"}
 </script></div></div></div>
 
 <div class="tab-panel" id="panel-mundo">
@@ -330,7 +195,7 @@ var newsSource="ambito";
 function loadNews(src){newsSource=src;var btns=["ambito","infobae","cronista"];btns.forEach(function(b){var el=document.getElementById("btn-"+b);if(el){el.style.background=b===src?"var(--amber)":"var(--bg3)";el.style.color=b===src?"#000":"var(--text)";}});var feeds={"ambito":"https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.ambito.com%2Frss%2Feconomia.xml","clarin":"https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.clarin.com%2Frss%2Feconomia%2F","iprofesional":"https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.iprofesional.com%2Frss%2Ffinanzas"};var nl=document.getElementById("news-list");if(nl)nl.innerHTML="<div style=\"color:var(--dim);font-size:12px;padding:20px;text-align:center\">Cargando...</div>";fetch(feeds[src]).then(function(r){return r.json();}).then(function(d){var items=(d.items||[]).slice(0,20);if(!nl)return;if(items.length===0){nl.innerHTML="<div style=\"color:var(--dim);padding:20px;text-align:center\">Sin resultados</div>";return;}nl.innerHTML=items.map(function(item){var title=item.title||"";var link=item.link||"";var pubDate=item.pubDate||"";var d2=pubDate?new Date(pubDate).toLocaleString("es-AR",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"}):"";return "<div class=\"news-item\" onclick=\"window.open('"+link+"','_blank')\"><div class=\"news-src\">"+src.toUpperCase()+"</div><div class=\"news-title\">"+title+"</div><div class=\"news-time\">"+d2+"</div></div>";}).join("");}).catch(function(){if(nl)nl.innerHTML="<div style=\"color:var(--red);padding:20px;text-align:center\">Error al cargar. Intenta otra fuente.</div>";});}
 function calcParidad(){var adr=parseFloat(document.getElementById("par-adr").value),ratio=parseFloat(document.getElementById("par-ratio").value)||10,ccl=parseFloat(document.getElementById("par-ccl").value),local=parseFloat(document.getElementById("par-local").value);if([adr,ccl,local].some(isNaN)){alert("Completa los campos");return;}var teorico=adr*ccl/ratio;var diff=((local-teorico)/teorico)*100;document.getElementById("par-teorico").textContent="$"+Math.round(teorico).toLocaleString("es-AR");document.getElementById("par-real").textContent="$"+Math.round(local).toLocaleString("es-AR");document.getElementById("par-diff").textContent=(diff>=0?"+":"")+diff.toFixed(2)+"%";var sig=document.getElementById("par-signal");sig.textContent=Math.abs(diff)<2?"PARIDAD: En linea con el ADR":diff>0?"LOCAL CARO vs ADR: El papel local cotiza "+diff.toFixed(1)+"% por encima del teorico":"LOCAL BARATO vs ADR: El papel local cotiza "+Math.abs(diff).toFixed(1)+"% por debajo del teorico";sig.style.background=Math.abs(diff)<2?"rgba(255,183,0,.1)":diff>0?"rgba(255,60,60,.1)":"rgba(0,200,100,.1)";sig.style.color=Math.abs(diff)<2?"var(--amber)":diff>0?"var(--red)":"var(--green)";document.getElementById("par-result").style.display="block";}
 function fetchParidadRef(){fetch("/api/quotes?symbols=GGAL").then(function(r){return r.json();}).then(function(d){var adr=d["GGAL"]&&d["GGAL"].price;if(adr){var e=document.getElementById("par-ggal-ref");if(e)e.textContent="USD "+parseFloat(adr).toFixed(2);var inp=document.getElementById("par-adr");if(inp&&!inp.value)inp.value=parseFloat(adr).toFixed(2);}}).catch(function(){});fetch("https://dolarapi.com/v1/dolares/contadoconliqui").then(function(r2){return r2.json();}).then(function(dd){var ccl=dd&&dd.venta;if(ccl){var e2=document.getElementById("par-ccl-val");if(e2)e2.textContent="$"+Math.round(ccl).toLocaleString("es-AR");var inp2=document.getElementById("par-ccl");if(inp2&&!inp2.value)inp2.value=Math.round(ccl);}}).catch(function(){});}
-function loadTIR(){var body=document.getElementById("tir-body");if(!body)return;var bonos=[{n:"AL30",precio:"54.5",var:"+0.8",tir:"20.1",dur:"3.2",venc:"2030-07"},{n:"GD30",precio:"56.2",var:"+0.5",tir:"19.4",dur:"3.1",venc:"2030-01"},{n:"AL35",precio:"52.8",var:"+1.2",tir:"14.8",dur:"5.8",venc:"2035-07"},{n:"GD35",precio:"54.1",var:"+0.9",tir:"14.2",dur:"5.6",venc:"2035-01"},{n:"AE38",precio:"49.3",var:"+0.3",tir:"13.5",dur:"7.2",venc:"2038-01"},{n:"GD46",precio:"58.7",var:"+1.1",tir:"12.8",dur:"9.8",venc:"2046-07"}];body.innerHTML=bonos.map(function(b){var chgNum=parseFloat(b.var);var col=chgNum>0?"var(--green)":chgNum<0?"var(--red)":"var(--dim)";return "<tr style=\"border-bottom:1px solid rgba(255,255,255,.05)\"><td style=\"padding:6px 8px;color:var(--amber);font-weight:700\">"+b.n+"</td><td style=\"text-align:right;padding:6px 8px\">$"+b.precio+"</td><td style=\"text-align:right;padding:6px 8px;color:"+col+"\">"+b.var+"%</td><td style=\"text-align:right;padding:6px 8px;color:var(--green)\">"+b.tir+"%</td><td style=\"text-align:right;padding:6px 8px;color:var(--dim)\">"+b.dur+"y</td><td style=\"text-align:right;padding:6px 8px;color:var(--dim)\">"+b.venc+"</td></tr>";}).join("");}
+function loadTIR(){var body=document.getElementById("tir-body");if(!body)return;var bonos=[{n:"AL30",precio:"54.50",v:"+0.8",tir:"20.1",dur:"3.2",venc:"2030-07"},{n:"GD30",precio:"56.20",v:"+0.5",tir:"19.4",dur:"3.1",venc:"2030-01"},{n:"AL35",precio:"52.80",v:"+1.2",tir:"14.8",dur:"5.8",venc:"2035-07"},{n:"GD35",precio:"54.10",v:"+0.9",tir:"14.2",dur:"5.6",venc:"2035-01"},{n:"AE38",precio:"49.30",v:"+0.3",tir:"13.5",dur:"7.2",venc:"2038-01"},{n:"GD46",precio:"58.70",v:"+1.1",tir:"12.8",dur:"9.8",venc:"2046-07"}];body.innerHTML=bonos.map(function(b){var c=parseFloat(b.v)>0?"var(--green)":parseFloat(b.v)<0?"var(--red)":"var(--dim)";return "<tr style=\"border-bottom:1px solid rgba(255,255,255,.05)\"><td style=\"padding:6px 8px;color:var(--amber);font-weight:700\">"+b.n+"</td><td style=\"text-align:right;padding:6px 8px\">$"+b.precio+"</td><td style=\"text-align:right;padding:6px 8px;color:"+c+"\">"+b.v+"%</td><td style=\"text-align:right;padding:6px 8px;color:var(--green)\">"+b.tir+"%</td><td style=\"text-align:right;padding:6px 8px;color:var(--dim)\">"+b.dur+"y</td><td style=\"text-align:right;padding:6px 8px;color:var(--dim)\">"+b.venc+"</td></tr>";}).join("");}
 
 function loadTIR(){
 var bonos=[
